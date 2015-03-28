@@ -88,7 +88,7 @@ class MyLogParser(SourceLib.SourceLog.SourceLogParser):
             if key == 'say':
                 logfile('[%(player_steamid)s] %(player_name)s (%(player_team)s): "%(message)s"' % value)
 
-        print remote, timestamp, key, value, properties
+        print(remote, timestamp, key, value, properties)
 
 # Listen for log on port 17015
 # use logaddress_add 1.2.3.4:17015 in the server config

@@ -4,6 +4,7 @@
 #------------------------------------------------------------------------------
 # SourceLib - Python implementation of Source Server Query/RCON/Log protocols.
 # Copyright (c) 2010 Andreas Klauer <Andreas.Klauer@metamorpher.de>
+# Copyright (c) 2015 Caian Benedicto <caian@ualberta.ca>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +25,6 @@
 # THE SOFTWARE.
 #------------------------------------------------------------------------------
 
-import SourceQuery
-import SourceRcon
-import SourceLog
+from . import SourceQuery
+from . import SourceRcon
+from . import SourceLog

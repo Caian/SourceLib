@@ -4,6 +4,7 @@
 #------------------------------------------------------------------------------
 # SourceQuery - Python class for querying info from Source Dedicated Servers
 # Copyright (c) 2010 Andreas Klauer <Andreas.Klauer@metamorpher.de>
+# Copyright (c) 2015 Caian Benedicto <caian@ualberta.ca>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +33,7 @@
 # TODO:: not implemented yet because I couldn't find a server that does this.
 
 import socket, struct, sys, time
-import StringIO
+import io
 
 PACKETSIZE=1400
 
@@ -63,7 +64,7 @@ A2S_RULES_REPLY = ord('E')
 CHALLENGE = -1
 S2C_CHALLENGE = ord('A')
 
-class SourceQueryPacket(StringIO.StringIO):
+class SourceQueryPacket(io.BytesIO):
     # putting and getting values
     def putByte(self, val):
         self.write(struct.pack('<B', val))
@@ -93,15 +94,15 @@ class SourceQueryPacket(StringIO.StringIO):
         return struct.unpack('<f', self.read(4))[0]
 
     def putString(self, val):
-        self.write(val + '\x00')
+        self.write(str(val + '\x00').encode(encoding='utf-8'))
 
     def getString(self):
         val = self.getvalue()
         start = self.tell()
-        end = val.index('\0', start)
+        end = val.index(b'\0', start)
         val = val[start:end]
         self.seek(end+1)
-        return val
+        return val.decode(encoding='utf-8')
 
 class SourceQueryError(Exception):
     pass
