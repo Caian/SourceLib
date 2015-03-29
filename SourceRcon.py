@@ -81,7 +81,7 @@ class SourceRcon(object):
             raise SourceRconError('RCON message too large to send')
 
         self.reqid += 1
-        data = struct.pack('<l', self.reqid) + struct.pack('<l', cmd) + message + '\x00\x00'
+        data = struct.pack('<l', self.reqid) + struct.pack('<l', cmd) + message.encode(encoding = 'utf-8') + b'\x00\x00'
         self.tcp.send(struct.pack('<l', len(data)) + data)
 
     def receive(self):
@@ -89,14 +89,14 @@ class SourceRcon(object):
         packetsize = False
         requestid = False
         response = False
-        message = ''
-        message2 = ''
+        message = b''
+        message2 = b''
 
         # response may be split into multiple packets, we don't know how many
         # so we loop until we decide to finish
         while 1:
             # read the size of this packet
-            buf = ''
+            buf = b''
 
             while len(buf) < 4:
                 try:
@@ -119,7 +119,7 @@ class SourceRcon(object):
                 raise SourceRconError('RCON packet claims to have illegal size: %d bytes' % (packetsize,))
 
             # read the whole packet
-            buf = ''
+            buf = b''
 
             while len(buf) < packetsize:
                 try:
@@ -156,9 +156,9 @@ class SourceRcon(object):
 
             # extract the two strings using index magic
             str1 = buf[8:]
-            pos1 = str1.index('\x00')
+            pos1 = str1.index(b'\x00')
             str2 = str1[pos1+1:]
-            pos2 = str2.index('\x00')
+            pos2 = str2.index(b'\x00')
             crap = str2[pos2+1:]
 
             if crap:
@@ -181,7 +181,7 @@ class SourceRcon(object):
         elif message2:
             raise SourceRconError('Invalid response message: %s' % (repr(message2),))
 
-        return message
+        return message.decode(encoding='utf-8')
 
     def rcon(self, command):
         """Send RCON command to the server. Connect and auth if necessary,
